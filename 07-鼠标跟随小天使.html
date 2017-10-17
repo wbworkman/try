@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        img {
+            width: 114px;
+            height: 104px;
+            position: absolute;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+            width: 5000px;
+            height: 5000px;
+        }
+    </style>
+    <script src="jquery-min.js"></script>
+    <script>
+        window.onload = function (){
+            var img = document.getElementsByTagName("img")[0];
+
+            document.onmousemove = function (event){
+                var event = event || window.event;
+                var pagex = event.pageX || event.clientX + scrollLeft();
+                var pagey = event.pageY || event.clientY + scrollTop();
+
+                //赋值
+                img.style.left = pagex - img.offsetWidth/2 + "px";
+                img.style.top = pagey - img.offsetHeight/2 + "px";
+            }
+        }
+    </script>
+</head>
+<body>
+<img src="images/img2.png" alt=""/>
+</body>
+</html>

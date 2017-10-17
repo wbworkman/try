@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box,
+        #box2 {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+            top: 0;
+        }
+        #box2 {
+            background-color: blue;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+<div id="box"></div>
+<div id="box2"></div>
+</body>
+<script type="text/javascript">
+    (function(window){
+        function Drag(id){
+            this.obj = document.getElementById(id);
+            this.disX = 0;
+            this.disY = 0;
+            this.init();
+        }
+        Drag.prototype.init = function (){
+            var that = this;
+            this.obj.onmousedown = function (e){
+                e = e || event;
+               //鼠标按下做一件事 获取固定距离
+                that.disX = e.clientX - this.offsetLeft;
+                that.disY = e.clientY - this.offsetTop;
+                document.onmousemove = function (e){
+                    that.fnMove(e);
+                }
+                document.onmouseup = function (){
+                    that.fnUp();
+                }
+            }
+        }
+        Drag.prototype.fnMove = function (e){
+            e = e || event;
+            console.log(this);
+            this.obj.style.left = e.clientX - this.disX +'px';
+            this.obj.style.top = e.clientY - this.disY +'px';
+        }
+        Drag.prototype.fnUp = function (){
+            document.onmousemove = document.onmouseup = null;
+        }
+
+
+        window.Drag = Drag;
+    })(window);
+
+    var drag1 = new Drag("box");
+
+</script>
+<script>
+    (function(window,Drag){
+        function Drag2(id){
+            Drag.call(this,id);
+        }
+        for(var attr in Drag.prototype){
+            Drag2.prototype[attr] = Drag.prototype[attr];
+        }
+
+       // Drag2.prototype.constructor = Drag2;
+        Drag2.prototype.fnMove = function (e){
+            e = e || event;
+            //加入限制范围 只能在可是区域内移动
+            var x = e.clientX - this.disX;
+            var y = e.clientY - this.disY;
+            var maxX = document.documentElement.clientWidth-this.obj.offsetWidth;
+            var maxY = document.documentElement.clientHeight-this.obj.offsetHeight;
+            if(x<0){
+                x = 0;
+            }
+            if(x>maxX){
+                x = maxX;
+            }
+            if(y<0){
+                y = 0;
+            }
+            if(y>maxY){
+                y = maxY;
+            }
+            //在移动过程中 让div跟着走
+            this.obj.style.left = x + 'px';
+            this.obj.style.top = y + 'px';
+        }
+        window.Drag2 = Drag2;
+    })(window,Drag);
+
+    var drag2 = new Drag2('box2');
+</script>
+</html>
